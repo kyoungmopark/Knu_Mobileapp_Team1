@@ -29,5 +29,5 @@ data class DaeguJungguData(
     val address: String
 
 ): RawData() {
-    override fun getCompleteAddress() = city + district + address
+    override fun getCompleteAddress() = "$city $district $address"
 }

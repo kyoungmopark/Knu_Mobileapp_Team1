@@ -3,16 +3,11 @@ package main
 import data.*
 
 fun main(args: Array<String>) {
-    val daeguBukguService = DaeguBukguService()
-    val daeguJungguService = DaeguJungguService()
-
-    val daeguBukguDataList = daeguBukguService.receive()
-
-    for (rawData in daeguBukguDataList) {
+    for (rawData in DaeguBukguService().receive()) {
         print(rawData)
         print("\n")
     }
-    for (rawData in daeguJungguService.receive()) {
+    for (rawData in DaeguJungguService().receive()) {
         print(rawData)
         print("\n")
     }

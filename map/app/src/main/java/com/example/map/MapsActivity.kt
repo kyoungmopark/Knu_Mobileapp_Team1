@@ -2,6 +2,7 @@ package com.example.map
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -10,6 +11,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.map.databinding.ActivityMapsBinding
+import data.DaeguBukguService
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -39,12 +43,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val locations = mapOf<String,LatLng>("글로벌프라자" to LatLng(35.8896997627053,128.61168939232567),"북문" to LatLng(35.889070663727615,128.60887490090266))
+
+        GlobalScope.launch {
+            val service = DaeguBukguService()
+            val dataList = service.receive()
+
+            for (data in dataList) {
+                Log.d("SIN", data.toString())
+                mMap.addMarker(MarkerOptions().position(data.latLng))
+            }
+        }
+        /*val locations = mapOf<String,LatLng>("글로벌프라자" to LatLng(35.8896997627053,128.61168939232567),"북문" to LatLng(35.889070663727615,128.60887490090266))
 
         for ((key,value) in locations) {
             mMap.addMarker(MarkerOptions().position(value).title("${key}"))
             mMap.moveCamera(CameraUpdateFactory.newLatLng(value))
 
-        }
+        }*/
     }
 }
