@@ -1,19 +1,19 @@
 package com.example.map
 
-import androidx.appcompat.app.AppCompatActivity
+import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
-
+import androidx.appcompat.app.AppCompatActivity
+import com.example.map.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.example.map.databinding.ActivityMapsBinding
 import data.DaeguBukguService
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import data.DaeguJungguService
+import java.util.*
+import kotlin.concurrent.thread
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -32,33 +32,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        GlobalScope.launch {
-            val service = DaeguBukguService()
-            val dataList = service.receive()
-
-            for (data in dataList) {
-                Log.d("SIN", data.toString())
-                mMap.addMarker(MarkerOptions().position(data.latLng))
+        thread(true) {
+            for (entry in DaeguBukguService().receive()) {
+                val address = Geocoder(this, Locale.KOREA).getFromLocationName(entry.key, 1)[0]
+                runOnUiThread {
+                    mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
+                }
             }
         }
-        /*val locations = mapOf<String,LatLng>("글로벌프라자" to LatLng(35.8896997627053,128.61168939232567),"북문" to LatLng(35.889070663727615,128.60887490090266))
+        thread(true) {
+            for (entry in DaeguJungguService().receive()) {
+                val address = Geocoder(this, Locale.KOREA).getFromLocationName(entry.key, 1)[0]
+                runOnUiThread {
+                    mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
+                }
+            }
+        }
+        /*
+        val locations = mapOf<String,LatLng>("글로벌프라자" to LatLng(35.8896997627053,128.61168939232567),"북문" to LatLng(35.889070663727615,128.60887490090266))
 
         for ((key,value) in locations) {
             mMap.addMarker(MarkerOptions().position(value).title("${key}"))
             mMap.moveCamera(CameraUpdateFactory.newLatLng(value))
-
-        }*/
+        }
+        */
     }
 }
