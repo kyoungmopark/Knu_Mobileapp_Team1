@@ -2,6 +2,7 @@ package com.example.map
 
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.map.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -10,8 +11,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import data.DaeguBukguService
-import data.DaeguJungguService
+import kotlinx.coroutines.*
+import rawdata.DaeguBukguData
+import rawdata.RawDataService
 import java.util.*
 import kotlin.concurrent.thread
 
@@ -35,29 +37,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        thread(true) {
-            for (entry in DaeguBukguService().receive()) {
-                val address = Geocoder(this, Locale.KOREA).getFromLocationName(entry.key, 1)[0]
-                runOnUiThread {
-                    mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
-                }
-            }
-        }
-        thread(true) {
-            for (entry in DaeguJungguService().receive()) {
-                val address = Geocoder(this, Locale.KOREA).getFromLocationName(entry.key, 1)[0]
-                runOnUiThread {
-                    mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
-                }
-            }
-        }
-        /*
-        val locations = mapOf<String,LatLng>("글로벌프라자" to LatLng(35.8896997627053,128.61168939232567),"북문" to LatLng(35.889070663727615,128.60887490090266))
+        CoroutineScope(Dispatchers.IO).launch {
+            val service = RawDataService(DaeguBukguData::class, "https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8?perPage=0&serviceKey=N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D")
+            val dataList = service.receive()
+            val geocoder = Geocoder(this@MapsActivity, Locale.KOREA)
 
-        for ((key,value) in locations) {
-            mMap.addMarker(MarkerOptions().position(value).title("${key}"))
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(value))
+            for (data in dataList) {
+                try {
+                    val address = geocoder.getFromLocationName(data.address, 1)[0]
+                    withContext(Dispatchers.Main) {
+                        mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
+                    }
+                } catch (e: Exception) {
+                    Log.d("SIN", e.toString())
+                }
+            }
         }
-        */
     }
 }

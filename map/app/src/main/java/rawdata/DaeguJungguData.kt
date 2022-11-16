@@ -1,4 +1,4 @@
-package data
+package rawdata
 
 import com.google.gson.annotations.SerializedName
 
@@ -29,5 +29,5 @@ data class DaeguJungguData(
     val address: String
 
 ): RawData() {
-    override fun getKey() = "$city $district $address"
+    override fun getCompleteAddress() = "$city $district $address"
 }
