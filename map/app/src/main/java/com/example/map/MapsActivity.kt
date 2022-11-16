@@ -44,10 +44,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             for (data in dataList) {
                 try {
+                    Log.d("SIN", "${data.address}")
+
                     val address = geocoder.getFromLocationName(data.address, 1)[0]
+
                     withContext(Dispatchers.Main) {
                         mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
                     }
+
                 } catch (e: Exception) {
                     Log.d("SIN", e.toString())
                 }
