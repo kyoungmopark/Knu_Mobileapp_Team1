@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "map"
 include ':app'
 include ':server'
+include ':mapdata'
