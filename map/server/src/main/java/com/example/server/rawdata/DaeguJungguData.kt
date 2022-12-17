@@ -30,5 +30,5 @@ data class DaeguJungguData(
 
 ): RawData() {
     override fun getCompleteAddress() = "$city $district $address"
-    override fun getEquipmentsToList() = listOf(equipment)
+    override fun getEquipmentsToList() = equipment
 }
