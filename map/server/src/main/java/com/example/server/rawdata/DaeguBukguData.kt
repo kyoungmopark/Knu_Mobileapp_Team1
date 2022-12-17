@@ -36,4 +36,5 @@ data class DaeguBukguData(
 
 ): RawData() {
     override fun getCompleteAddress() = address
+    override fun getEquipmentsToList() = listOf(equipments)
 }
