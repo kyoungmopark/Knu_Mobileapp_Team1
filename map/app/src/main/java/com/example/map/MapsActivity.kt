@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.map.databinding.ActivityMapsBinding
 import com.example.mapdata.MapData
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,6 +36,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
         val firebaseMapDataList = mutableListOf<MapData>()
         db = FirebaseFirestore.getInstance()
+
+        val position = CameraPosition.Builder()
+            .target(LatLng(35.893190, 128.610165)).zoom(16f).build()
+
+        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(position))
 
         db.collection("bukgu")
             .get().addOnSuccessListener { document ->
