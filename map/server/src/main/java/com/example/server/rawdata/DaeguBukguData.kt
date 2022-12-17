@@ -37,4 +37,8 @@ data class DaeguBukguData(
 ): RawData() {
     override fun getCompleteAddress() = address
     override fun getEquipmentsToList() = listOf(equipments)
+
+    companion object {
+        val urlBase = "https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8"
+    }
 }
