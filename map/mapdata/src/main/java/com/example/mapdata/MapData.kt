@@ -2,9 +2,8 @@ package com.example.mapdata
 
 import com.google.firebase.firestore.GeoPoint
 
-data class MapData(
-    val completeAddress: String,
-    val geoPoint: GeoPoint?,
-    val equipments: List<String>
-) {
+class MapData {
+    lateinit var completeAddress: String
+    var geoPoint: GeoPoint? = null
+    lateinit var equipments: List<String>
 }

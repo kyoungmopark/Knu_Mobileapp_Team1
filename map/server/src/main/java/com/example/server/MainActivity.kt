@@ -52,13 +52,19 @@ class MainActivity : AppCompatActivity() {
                     try {
                         Log.d("UPLOAD", "${rawData.key}")
                         val address = geocoder.getFromLocationName(rawData.key, 1)[0]
-                        val geoPoint = GeoPoint(address.latitude, address.longitude)
-                        val equipments = listOf<String>(rawData.value[0].getEquipmentsToList())
-                        mapDataList.add(com.example.mapdata.MapData(rawData.key, geoPoint, equipments))
-                        Log.d("UPLOAD", "${rawData.key} -> $geoPoint")
+                        val mapData = MapData().apply {
+                            geoPoint = GeoPoint(address.latitude, address.longitude)
+                            equipments = listOf(rawData.value[0].getEquipmentsToList())
+                            completeAddress = rawData.key
+                        }
+                        mapDataList.add(mapData)
+                        Log.d("UPLOAD", "${rawData.key} -> ${mapData.geoPoint}")
                     } catch (e: Exception) {
-                        val equipments = listOf<String>(rawData.value[0].getEquipmentsToList())
-                        mapDataList.add(com.example.mapdata.MapData(rawData.key, null, equipments))
+                        val mapData = MapData().apply {
+                            equipments = listOf(rawData.value[0].getEquipmentsToList())
+                            completeAddress = rawData.key
+                        }
+                        mapDataList.add(mapData)
                         Log.d("UPLOAD", e.toString())
                     }
                 }
