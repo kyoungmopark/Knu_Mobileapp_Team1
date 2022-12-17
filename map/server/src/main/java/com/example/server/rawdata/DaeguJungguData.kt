@@ -31,4 +31,8 @@ data class DaeguJungguData(
 ): RawData() {
     override fun getCompleteAddress() = "$city $district $address"
     override fun getEquipmentsToList() = equipment
+
+    companion object {
+        val urlBase = "https://api.odcloud.kr/api/15101506/v1/uddi:1958c212-87f4-4042-9466-eb03cb718ff1"
+    }
 }

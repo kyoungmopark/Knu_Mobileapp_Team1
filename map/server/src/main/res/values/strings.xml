@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">server</string>
+    <string name="service_key">N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D</string>
+    <string name="daegu_bukgu">bukgu</string>
+    <string name="daegu_junggu">junggu</string>
 </resources>
