@@ -29,15 +29,15 @@ class MainActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             uploadDaeguBukguData()
-            //uploadDeaguJungguData()
         }
     }
 
     fun uploadDaeguBukguData()
     {
-        val service = RawDataService(DaeguBukguData::class, "https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8?perPage=0&serviceKey=N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D")
+        val service = RawDataService(DaeguBukguData::class, DaeguBukguData.urlBase,
+            "N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D")
         val rawDataList = service.receiveByGroup()
-        val mapDataList = mutableListOf<com.example.mapdata.MapData>()
+        val mapDataList = mutableListOf<MapData>()
 
         db.collection("bukgu").document("0").get().addOnSuccessListener { document ->
             class TempTotalCnt {
@@ -78,10 +78,5 @@ class MainActivity : AppCompatActivity() {
                 Log.d("showdisplay", "Finish updating")
             }
         }
-    }
-
-    fun uploadDeaguJungguData()
-    {
-        val service = RawDataService(DaeguJungguData::class, "https://api.odcloud.kr/api/15101506/v1/uddi:1958c212-87f4-4042-9466-eb03cb718ff1?perPage=0&serviceKey=N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D")
     }
 }

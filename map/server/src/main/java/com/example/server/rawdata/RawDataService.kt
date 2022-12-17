@@ -5,8 +5,8 @@ import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import kotlin.reflect.KClass
 
-class RawDataService<T: RawData>(private val clazz: KClass<T>, urlString: String) {
-    private val conn = JsonConn(urlString)
+class RawDataService<T: RawData>(private val clazz: KClass<T>, urlBase: String, serviceKey: String) {
+    private val conn = JsonConn("$urlBase?perPage=0&serviceKey=$serviceKey")
     private val gson = Gson()
 
     fun receive() = conn.receive().deserialize()
