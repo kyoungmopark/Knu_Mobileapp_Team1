@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.mapdata.MapData
+import com.example.server.mapdata.DataGeocoder
+import com.example.server.mapdata.FirebaseUploader
+import com.example.server.mapdata.MapDataService
 import com.example.server.rawdata.DaeguBukguData
 import com.example.server.rawdata.DaeguJungguData
+import com.example.server.rawdata.RawData
 import com.example.server.rawdata.RawDataService
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -17,23 +21,35 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var geocoder: Geocoder
-    lateinit var db: FirebaseFirestore
+    lateinit var mapDataService: MapDataService
+
+    lateinit var daeguBukguDataService: RawDataService<DaeguBukguData>
+    lateinit var daeguJungguDataService: RawDataService<DaeguJungguData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        geocoder = Geocoder(this, Locale.KOREA)
-        db = FirebaseFirestore.getInstance()
+        mapDataService = MapDataService(this)
+
+        daeguBukguDataService = RawDataService(DaeguBukguData::class,
+            DaeguBukguData.urlBase, getString(R.string.service_key))
+
+        daeguJungguDataService = RawDataService(DaeguJungguData::class,
+            DaeguJungguData.urlBase, getString(R.string.service_key))
 
         CoroutineScope(Dispatchers.IO).launch {
-            uploadDaeguBukguData()
+            mapDataService.upload(getString(R.string.daegu_bukgu), daeguBukguDataService.receiveByGroup())
+            mapDataService.upload(getString(R.string.daegu_junggu), daeguJungguDataService.receiveByGroup())
+            //uploadDaeguBukguData()
         }
     }
 
     fun uploadDaeguBukguData()
     {
+        val geocoder = Geocoder(this, Locale.KOREA)
+        val db = FirebaseFirestore.getInstance()
+
         val service = RawDataService(DaeguBukguData::class, DaeguBukguData.urlBase,
             "N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D")
         val rawDataList = service.receiveByGroup()
