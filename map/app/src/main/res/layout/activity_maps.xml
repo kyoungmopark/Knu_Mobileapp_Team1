@@ -98,7 +98,7 @@
                         android:id="@+id/equipment_type"
                         android:layout_marginTop="7dp"
                         android:layout_width="290dp"
-                        android:maxLines="10"
+                        android:maxLines="11"
                         android:text="갱신 전"
                         android:textSize="14dp"
                         android:textColor="#000000"
