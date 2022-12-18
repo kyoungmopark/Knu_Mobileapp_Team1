@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -41,6 +43,7 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         val requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
@@ -184,8 +187,24 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     }
                 }
         }
+        googleMap!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener{
+            override fun onMarkerClick(marker: Marker): Boolean {
+                binding.cardView.visibility = View.VISIBLE
+                var addr = findViewById<TextView>(R.id.equipment_addr)
+                var type = findViewById<TextView>(R.id.equipment_type)
+                var num = findViewById<TextView>(R.id.equipment_num)
+                var arr = marker.tag.toString().split("/")
+               /*코드 추가해야함*/
+
+
+
+                return false
+
+            }
+        })
         //mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
 
     }
+
 
 }

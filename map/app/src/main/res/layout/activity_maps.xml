@@ -63,7 +63,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/park_name"
+                        android:id="@+id/equipment_addr"
                         android:layout_width="290dp"
                         android:layout_height="20dp"
                         android:layout_marginTop="5dp"
@@ -89,7 +89,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/park_what"
+                        android:id="@+id/equipment_type"
                         android:layout_marginTop="7dp"
                         android:layout_width="290dp"
                         android:text="갱신 전"
@@ -114,7 +114,7 @@
                         android:textStyle="bold"  />
 
                     <TextView
-                        android:id="@+id/park_add_lot"
+                        android:id="@+id/equipment_num"
                         android:layout_marginTop="7dp"
                         android:layout_width="290dp"
                         android:text="갱신 전"
