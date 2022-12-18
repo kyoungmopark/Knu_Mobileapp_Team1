@@ -1,16 +1,45 @@
 package com.example.server.mapdata
 
-import android.content.Context
-import com.example.server.rawdata.RawData
+import android.util.Log
+import com.example.mapdata.MapData
+import com.google.firebase.firestore.FirebaseFirestore
 
-class MapDataService(context: Context) {
-    private val dataGeocoder = DataGeocoder(context)
-    private val firebaseUploader = FirebaseUploader()
+class MapDataService(name: String) {
+    private val collection = firestore.collection(name)
 
-    fun upload(name: String, rawDataGroupList: Map<String, List<RawData>>) {
-        if (firebaseUploader.isRequired(name, rawDataGroupList.size)) {
-            val mapDataList = dataGeocoder.convert(rawDataGroupList)
-            firebaseUploader.update(name, mapDataList)
+    fun isRequiredUpdate(dataSize: Int): Boolean {
+        var total: Total? = null
+
+        collection.document("total").get().addOnSuccessListener { document ->
+            total = document.toObject(Total::class.java)
+        }
+
+        if (total?.total != dataSize) {
+            Log.d("upload", "required")
+            return true
+        } else {
+            Log.d("upload", "pass")
+            return false
+        }
+    }
+
+    fun send(mapDataList: List<MapData>) {
+
+        mapDataList.forEachIndexed { index, mapData ->
+            collection.document(index.toString()).set(mapData)
+            Log.d("upload", "${mapData.completeAddress}, ${mapData.geoPoint}")
+        }
+
+        val total = Total().apply { total = mapDataList.size }
+        collection.document("total").set(total)
+        Log.d("upload", "completed (total is ${total.total})")
+    }
+
+    companion object {
+        private class Total { var total = 0 }
+
+        private val firestore by lazy {
+            FirebaseFirestore.getInstance()
         }
     }
 }

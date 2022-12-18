@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">server</string>
     <string name="service_key">N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D</string>
-    <string name="daegu_bukgu">bukgu</string>
-    <string name="daegu_junggu">junggu</string>
+
+    <string name="daegu_bukgu_url_base">https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8</string>
+    <string name="daegu_bukgu_collection_name">bukgu</string>
+
+    <string name="daegu_junggu_url_base">https://api.odcloud.kr/api/15101506/v1/uddi:1958c212-87f4-4042-9466-eb03cb718ff1</string>
+    <string name="daegu_junggu_collection_name">junggu</string>
 </resources>

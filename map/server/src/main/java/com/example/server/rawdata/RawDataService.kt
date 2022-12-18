@@ -6,15 +6,20 @@ import com.google.gson.reflect.TypeToken
 import kotlin.reflect.KClass
 
 class RawDataService<T: RawData>(private val clazz: KClass<T>, urlBase: String, serviceKey: String) {
-    private val conn = JsonConn("$urlBase?perPage=0&serviceKey=$serviceKey")
-    private val gson = Gson()
+    private val downloader = JsonDownloader("$urlBase?perPage=0&serviceKey=$serviceKey")
 
-    fun receive() = conn.receive().deserialize()
-    fun receiveByGroup() = receive().groupBy { it.getCompleteAddress() }
+    fun receive() = downloader.receive().deserialize()
     
-    private fun String.deserialize(): List<T> =
-        gson.fromJson(
+    private fun String.deserialize(): List<T> {
+        return gson.fromJson(
             JsonParser.parseString(this).asJsonObject.get("data"),
             TypeToken.getParameterized(List::class.java, clazz.java).type
         )
+    }
+
+    companion object {
+        private val gson by lazy {
+            Gson()
+        }
+    }
 }
