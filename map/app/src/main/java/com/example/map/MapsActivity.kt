@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -169,11 +170,11 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(position))*/
 
-        db.collection("bukgu")
+        db.collection("junggu")
             .get().addOnSuccessListener { document ->
                 for(d in document) {
-                    Log.d("errorcheck", "${d.id}")
-                    if (!(d.id.equals("0"))) {
+                    if (!(d.id.equals("total"))) {
+                        Log.d("errorcheck", "${d.id}")
                         val tempMapData = d.toObject(MapData::class.java)
                         firebaseMapDataList.add(tempMapData)
 
@@ -188,7 +189,7 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                             marker?.tag = tempMapData.completeAddress + "/"
 
                             for (i in tempMapData.equipments) {
-                                marker?.tag = marker?.tag.toString() + "$i "
+                                marker?.tag = marker?.tag.toString() + "$i \n"
                             }
                         }
                     }
@@ -204,6 +205,7 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
                 addr.text = arr[0]
                 type.text = arr[1]
+                Log.d("errorcheck", "${arr[1]}")
 
                 return false
             }
