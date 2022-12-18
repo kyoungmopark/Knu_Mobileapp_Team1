@@ -16,7 +16,7 @@ class MapDataService(name: String) {
 
     suspend fun isRequiredUpdate(dataSize: Int): Boolean {
 
-        Log.d("upload", "$dataSize")
+        Log.d("upload", "data size = $dataSize")
 
         val total = suspendCoroutine { continuation ->
             collection.document("total").get().addOnSuccessListener {
