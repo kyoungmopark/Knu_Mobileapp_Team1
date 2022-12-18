@@ -44,7 +44,6 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         val requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
         ) {
@@ -182,7 +181,15 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                         val lng: Double? = tempMapData.geoPoint?.getLongitude()
 
                         if ((lat != null) && (lng != null)){
-                            mMap.addMarker(MarkerOptions().position(LatLng(lat, lng)))
+                            val markerOptions = MarkerOptions()
+                            markerOptions.position(LatLng(lat, lng))
+                            val marker = mMap.addMarker(markerOptions)
+
+                            marker?.tag = tempMapData.completeAddress + "/"
+
+                            for (i in tempMapData.equipments) {
+                                marker?.tag = marker?.tag.toString() + "$i "
+                            }
                         }
                     }
                 }
@@ -192,9 +199,10 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 binding.cardView.visibility = View.VISIBLE
                 var addr = findViewById<TextView>(R.id.equipment_addr)
                 var type = findViewById<TextView>(R.id.equipment_type)
-                var num = findViewById<TextView>(R.id.equipment_num)
                 var arr = marker.tag.toString().split("/")
-               /*코드 추가해야함*/
+
+                addr.text = arr[0]
+                type.text = arr[1]
 
 
 
@@ -205,6 +213,5 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         //mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
 
     }
-
 
 }
