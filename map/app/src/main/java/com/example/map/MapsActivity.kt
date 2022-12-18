@@ -2,6 +2,7 @@ package com.example.map
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.example.map.databinding.ActivityMapsBinding
 import com.example.mapdata.MapData
@@ -11,6 +12,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -30,6 +32,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        val card_view =LayoutInflater.from(this).inflate(R.layout.datail_info, null)
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -60,5 +65,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
         }
         //mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
+
     }
+
 }
