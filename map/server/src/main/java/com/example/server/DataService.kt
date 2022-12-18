@@ -15,7 +15,7 @@ class DataService<T: RawData>(
 
         if (mapDataService.isRequiredUpdate(groupingList.size)) {
             val mapDataList = converter.convert(groupingList)
-            mapDataService.send(mapDataList)
+            mapDataService.update(mapDataList)
         }
     }
 }

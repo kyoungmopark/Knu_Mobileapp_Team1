@@ -2,7 +2,7 @@ package com.example.server.rawdata
 
 import com.google.gson.annotations.SerializedName
 
-data class DaeguJungguData(
+data class JungguData(
 
     @SerializedName("관리번호")
     val serialNumber: String,

@@ -2,9 +2,19 @@
     <string name="app_name">server</string>
     <string name="service_key">N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D</string>
 
-    <string name="daegu_bukgu_url_base">https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8</string>
-    <string name="daegu_bukgu_collection_name">bukgu</string>
+    <string name="bukgu_url_base">https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8</string>
+    <string name="bukgu_collection_name">bukgu</string>
 
-    <string name="daegu_junggu_url_base">https://api.odcloud.kr/api/15101506/v1/uddi:1958c212-87f4-4042-9466-eb03cb718ff1</string>
-    <string name="daegu_junggu_collection_name">junggu</string>
+    <string name="junggu_url_base">https://api.odcloud.kr/api/15101506/v1/uddi:1958c212-87f4-4042-9466-eb03cb718ff1</string>
+    <string name="junggu_collection_name">junggu</string>
+
+    <string name="suseonggu_url_base">https://api.odcloud.kr/api/15099878/v1/uddi:12f1f3e4-d80e-47c9-af1b-8fe9af48f9a2</string>
+    <string name="suseonggu_collection_name">suseonggu</string>
+
+    <string name="donggu_url_base">https://api.odcloud.kr/api/15101535/v1/uddi:8f89a890-5f0a-4fe3-b2ea-b4bae002cf4b</string>
+    <string name="donggu_collection_name">donggu</string>
+
+    <string name="update">update</string>
+    <string name="update_in_prograss">in prograss</string>
+    <string name="update_completed">completed</string>
 </resources>

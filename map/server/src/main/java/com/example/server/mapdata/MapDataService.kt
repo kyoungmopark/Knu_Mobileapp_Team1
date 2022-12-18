@@ -16,44 +16,44 @@ class MapDataService(name: String) {
 
     suspend fun isRequiredUpdate(dataSize: Int): Boolean {
 
-        Log.d("upload", "data size = $dataSize")
-
         val total = suspendCoroutine { continuation ->
             collection.document("total").get().addOnSuccessListener {
-                continuation.resume(it.toObject(Total::class.java).apply {
-                    Log.d("upload", "succeed to get $this")
-                })
+                continuation.resume(
+                    it.toObject(Total::class.java).also {
+                        Log.d("dev", "succeed to check $it")
+                    }
+                )
             }.addOnFailureListener {
-                Log.d("upload", "failed to get total")
+                Log.d("dev", "failed to check total")
                 continuation.resume(null)
             }
         }
 
         return if (total?.total != dataSize) {
-            Log.d("upload", "required")
+            Log.d("dev", "required update")
             true
         } else {
-            Log.d("upload", "pass")
+            Log.d("dev", "passed update")
             false
         }
     }
 
-    fun send(mapDataList: List<MapData>) {
+    fun update(mapDataList: List<MapData>) {
 
         mapDataList.forEachIndexed { index, mapData ->
             collection.document(index.toString()).set(mapData).addOnSuccessListener {
-                Log.d("upload", "succeed to send $mapData")
+                Log.d("dev", "succeed to update $mapData")
             }.addOnFailureListener {
-                Log.d("upload", "failed to send $mapData")
+                Log.d("dev", "failed to update $mapData")
             }
         }
 
         val total = Total().apply { total = mapDataList.size }
 
         collection.document("total").set(total).addOnSuccessListener {
-            Log.d("upload", "succeed to send $total")
+            Log.d("dev", "succeed to update $total")
         }.addOnFailureListener {
-            Log.d("upload", "failed to send $total")
+            Log.d("dev", "failed to update $total")
         }
     }
 
