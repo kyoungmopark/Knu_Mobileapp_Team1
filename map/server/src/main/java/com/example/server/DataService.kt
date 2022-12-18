@@ -10,7 +10,7 @@ class DataService<T: RawData>(
     private val converter: DataConverter,
     private val mapDataService: MapDataService
 ) {
-    fun update() {
+    suspend fun update() {
         val groupingList = rawDataService.receive().groupBy { it.getCompleteAddress() }
 
         if (mapDataService.isRequiredUpdate(groupingList.size)) {
