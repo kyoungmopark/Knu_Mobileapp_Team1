@@ -3,6 +3,7 @@ package com.example.server.mapdata
 import android.util.Log
 import com.example.mapdata.MapData
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 class MapDataService(name: String) {
     private val collection = firestore.collection(name)
@@ -10,9 +11,15 @@ class MapDataService(name: String) {
     fun isRequiredUpdate(dataSize: Int): Boolean {
         var total: Total? = null
 
-        collection.document("total").get().addOnSuccessListener { document ->
+        val task = collection.document("total").get().addOnSuccessListener { document ->
             total = document.toObject(Total::class.java)
+
         }
+
+        while(total?.total == null){}
+
+        Log.d("upload", "total data value: ${total?.total}")
+        Log.d("upload", "total data value: ${dataSize}")
 
         if (total?.total != dataSize) {
             Log.d("upload", "required")
@@ -21,6 +28,7 @@ class MapDataService(name: String) {
             Log.d("upload", "pass")
             return false
         }
+
     }
 
     fun send(mapDataList: List<MapData>) {
