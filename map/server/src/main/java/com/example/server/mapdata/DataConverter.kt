@@ -18,16 +18,17 @@ class DataConverter(context: Context) {
 
                 geoPoint = try {
                     val address = geocoder.getFromLocationName(it.key, 1)[0]
-                    GeoPoint(address.latitude, address.longitude)
+                    GeoPoint(address.latitude, address.longitude).also {
+                        Log.d("dev", "succeed to convert $completeAddress -> $it")
+                    }
                 } catch (e: Exception) {
+                    Log.d("dev", "failed to convert (${e.message})")
                     null
                 }
 
                 equipments = it.value.mapNotNull {
                     it.getEquipmentsToList()
                 }
-
-                Log.d("convert", "$completeAddress -> $geoPoint")
             }
         }
     }

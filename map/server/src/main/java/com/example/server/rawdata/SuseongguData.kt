@@ -2,7 +2,7 @@ package com.example.server.rawdata
 
 import com.google.gson.annotations.SerializedName
 
-data class DaeguBukguData(
+data class SuseongguData(
 
     @SerializedName("관리부서")
     val department: String,
@@ -10,14 +10,14 @@ data class DaeguBukguData(
     @SerializedName("관리부서연락처")
     val contact: String,
 
-    @SerializedName("데이터기준일자")
+    @SerializedName("데이터기준")
     val baseDate: String,
+
+    @SerializedName("설치년도")
+    val year: Int,
 
     @SerializedName("설치장소")
     val location: String,
-
-    @SerializedName("소재지 지번주소")
-    val address: String,
 
     @SerializedName("수량")
     val quantity: Int,
@@ -28,13 +28,15 @@ data class DaeguBukguData(
     @SerializedName("시도명")
     val city: String,
 
-    @SerializedName("연번")
-    val serialNumber: Int,
+    @SerializedName("운동기구명")
+    val equipment: String,
 
-    @SerializedName("운동기구종류")
-    val equipments: String
+    @SerializedName("주소")
+    val address: String,
 
+    @SerializedName("행정동명")
+    val neighborhood: String
 ): RawData() {
-    override fun getCompleteAddress() = address
-    override fun getEquipmentsToList() = equipments
+    override fun getCompleteAddress() = "$city $district $address"
+    override fun getEquipmentsToList() = equipment
 }
