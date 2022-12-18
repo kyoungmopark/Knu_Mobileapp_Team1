@@ -14,10 +14,17 @@ class RawDataService<T: RawData>(private val clazz: KClass<T>, urlBase: String, 
     }
     
     private fun String.deserialize(): List<T> {
-        return gson.fromJson(
-            JsonParser.parseString(this).asJsonObject.get("data"),
-            TypeToken.getParameterized(List::class.java, clazz.java).type
-        )
+        return try {
+            gson.fromJson<List<T>>(
+                JsonParser.parseString(this).asJsonObject.get("data"),
+                TypeToken.getParameterized(List::class.java, clazz.java).type
+            ).also {
+                Log.d("dev", "succeed to deserialize")
+            }
+        } catch (e: Exception) {
+            Log.d("dev", "failed to deserialize")
+            listOf()
+        }
     }
 
     companion object {

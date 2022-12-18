@@ -18,10 +18,10 @@ class JsonDownloader(urlString: String) {
                     }
                 }
             }
-            Log.d("dev", "succeed to download")
+            Log.d("dev", "succeed to download json")
             buffer.toString()
         } catch (e: Exception) {
-            Log.d("dev", "failed to download")
+            Log.d("dev", "failed to download json")
             ""
         }
     }

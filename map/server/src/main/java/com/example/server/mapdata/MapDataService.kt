@@ -24,16 +24,16 @@ class MapDataService(name: String) {
                     }
                 )
             }.addOnFailureListener {
-                Log.d("dev", "failed to check total")
+                Log.d("dev", "failed to check total of map-data")
                 continuation.resume(null)
             }
         }
 
         return if (total?.total != dataSize) {
-            Log.d("dev", "required update")
+            Log.d("dev", "required update map-data")
             true
         } else {
-            Log.d("dev", "passed update")
+            Log.d("dev", "passed update map-data")
             false
         }
     }
