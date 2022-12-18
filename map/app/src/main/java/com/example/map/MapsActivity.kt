@@ -93,6 +93,7 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             // 위치 제공자 준비하기
             apiClient.connect()
         }
+        binding.cardView.visibility = View.GONE
     }
 
     override fun onRequestPermissionsResult(
@@ -164,7 +165,7 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         val firebaseMapDataList = mutableListOf<MapData>()
         db = FirebaseFirestore.getInstance()
 
-       /* val position = CameraPosition.Builder()
+      /*  val position = CameraPosition.Builder()
             .target(LatLng(35.893190, 128.610165)).zoom(16f).build()
 
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(position))*/
@@ -194,6 +195,7 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                     }
                 }
         }
+        // 마커 클릭 리스너 : 클릭하면 카드뷰를 띄움
         googleMap!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener{
             override fun onMarkerClick(marker: Marker): Boolean {
                 binding.cardView.visibility = View.VISIBLE
@@ -204,12 +206,17 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 addr.text = arr[0]
                 type.text = arr[1]
 
-
-
                 return false
-
             }
         })
+        // 맵 클릭 리스너 : 클릭하면 카드뷰 없어짐
+        googleMap!!.setOnMapClickListener(object : GoogleMap.OnMapClickListener {
+            override fun onMapClick(latLng: LatLng) {
+                binding.cardView.visibility = View.GONE
+            }
+        })
+
+
         //mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
 
     }
