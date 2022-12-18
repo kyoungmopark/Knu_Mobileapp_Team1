@@ -1,51 +1,44 @@
 package com.example.server
 
-import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.example.mapdata.MapData
-import com.example.server.mapdata.DataGeocoder
-import com.example.server.mapdata.FirebaseUploader
-import com.example.server.mapdata.MapDataService
-import com.example.server.rawdata.DaeguBukguData
-import com.example.server.rawdata.DaeguJungguData
-import com.example.server.rawdata.RawData
-import com.example.server.rawdata.RawDataService
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.GeoPoint
+import com.example.server.mapdata.*
+import com.example.server.rawdata.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var mapDataService: MapDataService
+    private lateinit var dataConverter: DataConverter
 
-    lateinit var daeguBukguDataService: RawDataService<DaeguBukguData>
-    lateinit var daeguJungguDataService: RawDataService<DaeguJungguData>
+    private lateinit var daeguBukguDataService: DataService<DaeguBukguData>
+    private lateinit var daeguJungguDataService: DataService<DaeguJungguData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mapDataService = MapDataService(this)
+        dataConverter = DataConverter(this)
 
-        daeguBukguDataService = RawDataService(DaeguBukguData::class,
-            DaeguBukguData.urlBase, getString(R.string.service_key))
-
-        daeguJungguDataService = RawDataService(DaeguJungguData::class,
-            DaeguJungguData.urlBase, getString(R.string.service_key))
+        daeguBukguDataService = DataService(
+            RawDataService(DaeguBukguData::class, getString(R.string.daegu_bukgu_url_base), getString(R.string.service_key)),
+            dataConverter,
+            MapDataService(getString(R.string.daegu_bukgu_collection_name))
+        )
+        daeguJungguDataService = DataService(
+            RawDataService(DaeguJungguData::class, getString(R.string.daegu_junggu_url_base), getString(R.string.service_key)),
+            dataConverter,
+            MapDataService(getString(R.string.daegu_junggu_collection_name))
+        )
 
         CoroutineScope(Dispatchers.IO).launch {
-            mapDataService.upload(getString(R.string.daegu_bukgu), daeguBukguDataService.receiveByGroup())
-            mapDataService.upload(getString(R.string.daegu_junggu), daeguJungguDataService.receiveByGroup())
-            //uploadDaeguBukguData()
+            daeguBukguDataService.update()
+            daeguJungguDataService.update()
         }
     }
 
-    fun uploadDaeguBukguData()
+    /*fun uploadDaeguBukguData()
     {
         val geocoder = Geocoder(this, Locale.KOREA)
         val db = FirebaseFirestore.getInstance()
@@ -99,5 +92,5 @@ class MainActivity : AppCompatActivity() {
                 Log.d("showdisplay", "Finish updating")
             }
         }
-    }
+    }*/
 }

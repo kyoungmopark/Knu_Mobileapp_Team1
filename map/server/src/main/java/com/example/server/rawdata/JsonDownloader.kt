@@ -4,7 +4,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
 
-class JsonConn(urlString: String) {
+class JsonDownloader(urlString: String) {
     private val url = URL(urlString)
 
     fun receive(): String {
