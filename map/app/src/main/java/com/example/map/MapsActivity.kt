@@ -126,9 +126,8 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             )
         )
         markerOptions.position(latLng)
-        markerOptions.title("MyLocation")
         // 마커 표시하기
-        mMap?.addMarker(markerOptions)
+        mMap?.addMarker(markerOptions)?.tag = "현재위치/ "
     }
 
     // 위치 제공자를 사용할 수 있는 상황일 때
@@ -215,9 +214,6 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 binding.cardView.visibility = View.GONE
             }
         })
-
-
-        //mMap.addMarker(MarkerOptions().position(LatLng(address.latitude, address.longitude)))
 
     }
 
