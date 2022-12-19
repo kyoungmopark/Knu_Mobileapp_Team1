@@ -24,7 +24,7 @@ class JsonDownloader(private val name: String, urlString: String) {
             }
         } catch (e: Exception) {
             "".also {
-                Log.d("knu", "failed to download json from $name")
+                Log.d("knu", "failed to download json from $name\n$e")
             }
         }
     }

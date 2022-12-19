@@ -23,7 +23,7 @@ class JsonDeserializer<T: DeserializedData>(private val clazz: KClass<T>, privat
             }
         } catch (e: Exception) {
             listOf<T>().also {
-                Log.d("knu", "failed to deserialize json of $name")
+                Log.d("knu", "failed to deserialize json of $name\n$e")
             }
         }
     }
