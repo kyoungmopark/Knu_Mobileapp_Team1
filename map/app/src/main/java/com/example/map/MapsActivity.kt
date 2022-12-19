@@ -171,12 +171,11 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         CoroutineScope(Dispatchers.IO).launch {
             val mapDataList = bukguDataDownloader.download()
             mapDataList.forEach { mapData ->
+                Log.d("knu", "get $mapData of bukgu")
                 mapData.geoPoint?.also { geoPoint ->
-
-                    val latLng = LatLng(geoPoint.latitude, geoPoint.longitude)
-                    val markerOptions = MarkerOptions().apply { position(latLng) }
-
                     withContext(Dispatchers.Main) {
+                        val latLng = LatLng(geoPoint.latitude, geoPoint.longitude)
+                        val markerOptions = MarkerOptions().apply { position(latLng) }
                         mMap.addMarker(markerOptions)?.apply {
                             tag = "${mapData.completeAddress}/${mapData.equipments.joinToString("\n")}"
                         }

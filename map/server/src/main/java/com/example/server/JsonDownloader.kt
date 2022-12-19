@@ -20,11 +20,11 @@ class JsonDownloader(private val name: String, urlString: String) {
                 }
             }
             buffer.toString().also {
-                Log.d("dev", "succeed to download json of $name")
+                Log.d("knu", "succeed to download json from $name")
             }
         } catch (e: Exception) {
             "".also {
-                Log.d("dev", "failed to download json of $name")
+                Log.d("knu", "failed to download json from $name")
             }
         }
     }
