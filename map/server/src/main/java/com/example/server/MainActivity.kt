@@ -36,20 +36,30 @@ class MainActivity : AppCompatActivity() {
         ).apply {
             setOnStartListener {
                 setOnStartListener {
-                    binding.bukguResult.text = getString(R.string.update_wait)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.bukguResult.text = getString(R.string.update_wait)
+                    }
                 }
                 setOnCompleteListener {
-                    binding.bukguResult.text = getString(R.string.update_completed)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.bukguResult.text = getString(R.string.update_completed)
+                    }
                 }
                 setOnGeocodeStartListener {
-                    binding.bukguProgress.visibility = View.VISIBLE
-                    binding.bukguProgress.max = it
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.bukguProgress.visibility = View.VISIBLE
+                        binding.bukguProgress.max = it
+                    }
                 }
                 setOnGeocodeProgressListener {
-                    binding.bukguProgress.progress = it
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.bukguProgress.progress = it
+                    }
                 }
                 setOnGeocodeCompleteListener {
-                    binding.bukguProgress.visibility = View.GONE
+                    CoroutineScope(Dispatchers.Main).launch {
+                        binding.bukguProgress.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -62,20 +72,30 @@ class MainActivity : AppCompatActivity() {
             geocoder
         ).apply {
             setOnStartListener {
-                binding.jungguResult.text = getString(R.string.update_wait)
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.jungguResult.text = getString(R.string.update_wait)
+                }
             }
             setOnCompleteListener {
-                binding.jungguResult.text = getString(R.string.update_completed)
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.jungguResult.text = getString(R.string.update_completed)
+                }
             }
             setOnGeocodeStartListener {
-                binding.jungguProgress.visibility = View.VISIBLE
-                binding.jungguProgress.max = it
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.jungguProgress.visibility = View.VISIBLE
+                    binding.jungguProgress.max = it
+                }
             }
             setOnGeocodeProgressListener {
-                binding.jungguProgress.progress = it
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.jungguProgress.progress = it
+                }
             }
             setOnGeocodeCompleteListener {
-                binding.jungguProgress.visibility = View.GONE
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.jungguProgress.visibility = View.GONE
+                }
             }
         }
 
@@ -87,20 +107,30 @@ class MainActivity : AppCompatActivity() {
             geocoder
         ).apply {
             setOnStartListener {
-                binding.suseongguResult.text = getString(R.string.update_wait)
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.suseongguResult.text = getString(R.string.update_wait)
+                }
             }
             setOnCompleteListener {
-                binding.suseongguResult.text = getString(R.string.update_completed)
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.suseongguResult.text = getString(R.string.update_completed)
+                }
             }
             setOnGeocodeStartListener {
-                binding.suseongguProgress.visibility = View.VISIBLE
-                binding.suseongguProgress.max = it
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.suseongguProgress.visibility = View.VISIBLE
+                    binding.suseongguProgress.max = it
+                }
             }
             setOnGeocodeProgressListener {
-                binding.suseongguProgress.progress = it
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.suseongguProgress.progress = it
+                }
             }
             setOnGeocodeCompleteListener {
-                binding.suseongguProgress.visibility = View.GONE
+                CoroutineScope(Dispatchers.Main).launch {
+                    binding.suseongguProgress.visibility = View.GONE
+                }
             }
         }
 

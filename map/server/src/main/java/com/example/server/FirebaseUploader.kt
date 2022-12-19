@@ -17,19 +17,18 @@ class FirebaseUploader(private val name: String) {
     private val collection = firestore.collection(name)
 
     suspend fun getTotal(): Int = suspendCoroutine { continuation ->
-        val task = collection.document("total").get()
-        task.addOnSuccessListener { document ->
+        collection.document("total").get().addOnSuccessListener { document ->
             val totalData = document.toObject(TotalData::class.java).also {
                 Log.d("knu", "succeed to get $it of $name")
             }
             continuation.resume(totalData?.total ?: 0)
         }.addOnFailureListener {
-            Log.d("knu", "failed to get Total of $name")
+            Log.d("knu", "failed to get Total of $name\n$it")
             continuation.resume(0)
         }
     }
 
-    suspend fun getTotal_new(): Int {
+    /*suspend fun getTotal(): Int {
         val task = collection.document("total").get()
         val document = task.await()
 
@@ -42,9 +41,27 @@ class FirebaseUploader(private val name: String) {
             null
         }
         return totalData?.total ?: 0
+    }*/
+
+    suspend fun upload(mapDataList: List<MapData>): Boolean = suspendCoroutine { continuation ->
+        val batch = firestore.batch()
+
+        mapDataList.forEachIndexed { index, mapData ->
+            batch.set(collection.document(index.toString()), mapData)
+        }
+        val totalData = TotalData(mapDataList.size)
+        batch.set(collection.document("total"), totalData)
+
+        batch.commit().addOnSuccessListener {
+            Log.d("knu", "succeed to upload data into $name")
+            continuation.resume(true)
+        }.addOnFailureListener {
+            Log.d("knu", "failed to upload data into $name\n$it")
+            continuation.resume(false)
+        }
     }
 
-    suspend fun upload(mapDataList: List<MapData>) {
+    /*suspend fun upload(mapDataList: List<MapData>) {
         val batch = firestore.batch()
 
         mapDataList.forEachIndexed { index, mapData ->
@@ -61,5 +78,5 @@ class FirebaseUploader(private val name: String) {
         } else {
             Log.d("knu", "failed to upload data into $name")
         }
-    }
+    }*/
 }

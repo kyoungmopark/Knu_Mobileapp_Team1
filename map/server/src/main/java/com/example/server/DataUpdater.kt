@@ -35,9 +35,9 @@ class DataUpdater<T: DeserializedData>(
     private suspend fun isRequired(size: Int): Boolean {
         return (uploader.getTotal() != size).also {
             if (it) {
-                Log.d("knu", "required to update data of $name")
+                Log.d("knu", "required to update data(size = $size) of $name")
             } else {
-                Log.d("knu", "passed to update data of $name")
+                Log.d("knu", "passed to update data(size = $size) of $name")
             }
         }
     }
