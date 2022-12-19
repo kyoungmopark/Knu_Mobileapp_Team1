@@ -29,6 +29,11 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.suspendCoroutine
 
 class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
@@ -162,22 +167,43 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val firebaseMapDataList = mutableListOf<MapData>()
         db = FirebaseFirestore.getInstance()
+        var firebaseMapDataList = mutableListOf<MapData>()
+        
+        //바뀐 코드 시작
+        firebaseMapDataList = MapDataService(db, "junggu").getData()
+        
+        Log.d("errorcheck", "포문 시작")
+        for (tempMapData in firebaseMapDataList) {
+            val lat: Double? = tempMapData.geoPoint?.getLatitude()
+            val lng: Double? = tempMapData.geoPoint?.getLongitude()
 
-      /*  val position = CameraPosition.Builder()
-            .target(LatLng(35.893190, 128.610165)).zoom(16f).build()
+            if ((lat != null) && (lng != null)){
+                Log.d("errorcheck", "for문 : ${tempMapData.completeAddress}")
+                val markerOptions = MarkerOptions()
+                markerOptions.position(LatLng(lat, lng))
+                val marker = mMap.addMarker(markerOptions)
 
-        googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(position))*/
+                marker?.tag = tempMapData.completeAddress + "/"
 
-        db.collection("junggu")
+                for (i in tempMapData.equipments) {
+                    marker?.tag = marker?.tag.toString() + "$i \n"
+                }
+            }
+
+        }
+        Log.d("errorcheck", "포문 나옴")
+        //바뀐 코드 끝
+
+        //기존 코드 시작
+        /*db.collection("junggu")
             .get().addOnSuccessListener { document ->
                 for(d in document) {
                     if (!(d.id.equals("total"))) {
                         Log.d("errorcheck", "${d.id}")
                         val tempMapData = d.toObject(MapData::class.java)
                         firebaseMapDataList.add(tempMapData)
-
+                        Log.d("errorcheck", "${firebaseMapDataList.last().completeAddress}")
                         val lat: Double? = tempMapData.geoPoint?.getLatitude()
                         val lng: Double? = tempMapData.geoPoint?.getLongitude()
 
@@ -194,7 +220,11 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                         }
                     }
                 }
-        }
+        }*/
+        //기존 코드 끝
+        
+        
+        Log.d("errorcheck", "마커 클릭 리스너 시작")
         // 마커 클릭 리스너 : 클릭하면 카드뷰를 띄움
         googleMap!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener{
             override fun onMarkerClick(marker: Marker): Boolean {
@@ -210,12 +240,16 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 return false
             }
         })
+        Log.d("errorcheck", "마커 클릭 리스너 끝")
+
+        Log.d("errorcheck", "맵 클릭 리스너 시작")
         // 맵 클릭 리스너 : 클릭하면 카드뷰 없어짐
         googleMap!!.setOnMapClickListener(object : GoogleMap.OnMapClickListener {
             override fun onMapClick(latLng: LatLng) {
                 binding.cardView.visibility = View.GONE
             }
         })
+        Log.d("errorcheck", "맵 클릭 리스너 끝")
 
     }
 
