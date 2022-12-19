@@ -17,8 +17,8 @@
     <LinearLayout
         android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
-        android:layout_marginBottom="30dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="5dp"
         android:layout_alignParentBottom="true"
         xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="220dp"
                 android:layout_marginLeft="8.8dp"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -72,7 +72,7 @@
                         android:layout_width="70dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="16dp"
-                        android:layout_marginTop="7dp"
+                        android:layout_marginTop="5dp"
                         android:text="기구 종류: "
                         android:textColor="#000000"
                         android:textSize="16dp"
@@ -86,7 +86,6 @@
                         android:fillViewport="true">
                     <TextView
                         android:id="@+id/equipment_type"
-                        android:layout_marginTop="7dp"
                         android:layout_width="290dp"
                         android:maxLines="11"
                         android:text="갱신 전"
