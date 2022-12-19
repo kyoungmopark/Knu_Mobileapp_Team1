@@ -1,4 +1,4 @@
-package com.example.server.data
+package com.example.mapdata
 
 class TotalData() {
     var total = 0

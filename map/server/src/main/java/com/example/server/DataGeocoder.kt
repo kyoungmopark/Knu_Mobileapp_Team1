@@ -1,44 +1,61 @@
 package com.example.server
 
-import android.content.Context
 import android.location.Geocoder
 import android.util.Log
 import com.example.mapdata.MapData
 import com.example.server.data.DeserializedData
 import com.google.firebase.firestore.GeoPoint
-import java.util.*
+import kotlinx.coroutines.*
+import java.util.concurrent.atomic.AtomicInteger
 
-// 지오코더와 통신하여 데이터를 지오코딩하는 클래스
-class DataGeocoder(context: Context) {
-    private val geocoder = Geocoder(context, Locale.KOREA)
+// 지오코더를 사용하여 데이터를 지오코딩한다
+class DataGeocoder(private val name: String, geocoder: Geocoder) {
+    private val geocoder = geocoder
 
-    private lateinit var onProgressListener: (Int, Int) -> Unit
+    private lateinit var onStartListener: (Int) -> Unit
+    private lateinit var onProgressListener: (Int) -> Unit
+    private lateinit var onCompleteListener: (Int) -> Unit
 
-    fun geocode(groupList: Map<String, List<DeserializedData>>): List<MapData> {
-        return groupList.toList().mapIndexed { index, group ->
-            MapData().apply {
-                completeAddress = group.first
+    suspend fun geocode(groupList: Map<String, List<DeserializedData>>): List<MapData> {
+        // 이 변수는 Int를 사용하면 값이 증가할 때 데이터 경쟁이 발생할 수 있다
+        // 그러므로 Int 대신 AtomicInteger를 사용한다
+        val progress = AtomicInteger()
 
-                geoPoint = try {
-                    val address = geocoder.getFromLocationName(group.first, 1)[0]
-                    GeoPoint(address.latitude, address.longitude).also {
-                        Log.d("dev", "succeed to geocode ($completeAddress) -> $it")
+        val deferredList = groupList.map { group ->
+            CoroutineScope(Dispatchers.IO).async {
+                MapData(
+                    completeAddress = group.key,
+                    geoPoint = try {
+                        val address = geocoder.getFromLocationName(group.key, 1)[0]
+                        GeoPoint(address.latitude, address.longitude).also {
+                            Log.d("dev", "succeed to geocode data of $name\n${group.key} -> $it")
+                        }
+                    } catch (e: Exception) {
+                        Log.d("dev", "failed to geocode data of $name\n${group.key}")
+                        null
+                    },
+                    equipments = group.value.mapNotNull {
+                        it.getEquipmentsToList()
                     }
-                } catch (e: Exception) {
-                    Log.d("dev", "failed to geocode ($completeAddress)")
-                    null
+                ).also {
+                    onProgressListener(progress.getAndIncrement() + 1)
                 }
-
-                equipments = group.second.mapNotNull {
-                    it.getEquipmentsToList()
-                }
-
-                onProgressListener(index + 1, groupList.size)
             }
+        }
+
+        onStartListener(deferredList.size)
+        return deferredList.awaitAll().also {
+            onCompleteListener(it.size)
         }
     }
 
-    fun setOnProgressListener(callback: (Int, Int) -> Unit) {
+    fun setOnStartListener(callback: (Int) -> Unit) {
+        onStartListener = callback
+    }
+    fun setOnProgressListener(callback: (Int) -> Unit) {
         onProgressListener = callback
+    }
+    fun setOnCompleteListener(callback: (Int) -> Unit) {
+        onCompleteListener = callback
     }
 }

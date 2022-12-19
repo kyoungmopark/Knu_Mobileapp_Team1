@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">map</string>
     <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="bukgu">bukgu</string>
+    <string name="junggu">junggu</string>
+    <string name="suseonggu">suseonggu</string>
 </resources>

@@ -7,8 +7,8 @@ import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import kotlin.reflect.KClass
 
-// JSON을 역직렬화한다.
-class JsonDeserializer<T: DeserializedData>(private val clazz: KClass<T>) {
+// GSON을 사용하여 JSON을 역직렬화한다
+class JsonDeserializer<T: DeserializedData>(private val clazz: KClass<T>, private val name: String) {
     companion object {
         private val gson by lazy { Gson() }
     }
@@ -19,11 +19,11 @@ class JsonDeserializer<T: DeserializedData>(private val clazz: KClass<T>) {
                 JsonParser.parseString(json).asJsonObject.get("data"),
                 TypeToken.getParameterized(List::class.java, clazz.java).type
             ).also {
-                Log.d("dev", "succeed to deserialize")
+                Log.d("dev", "succeed to deserialize json of $name")
             }
         } catch (e: Exception) {
             listOf<T>().also {
-                Log.d("dev", "failed to deserialize")
+                Log.d("dev", "failed to deserialize json of $name")
             }
         }
     }
