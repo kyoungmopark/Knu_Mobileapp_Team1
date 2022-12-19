@@ -7,17 +7,21 @@ import com.example.server.data.DeserializedData
 import com.google.firebase.firestore.GeoPoint
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.coroutines.CoroutineContext
 
 // 지오코더를 사용하여 데이터를 지오코딩한다
 class DataGeocoder(private val name: String, geocoder: Geocoder) {
     private val geocoder = geocoder
 
-    private lateinit var onStartListener: (Int) -> Unit
-    private lateinit var onProgressListener: (Int) -> Unit
-    private lateinit var onCompleteListener: (Int) -> Unit
+    private lateinit var onStartListener: (Int, CoroutineScope) -> Unit
+    private lateinit var onProgressListener: (Int, CoroutineScope) -> Unit
+    private lateinit var onCompleteListener: (Int, CoroutineScope) -> Unit
 
-    fun geocode(groupList: Map<String, List<DeserializedData>>): List<MapData> {
-        //onStartListener(groupList.size)
+    fun geocode(
+        groupList: Map<String, List<DeserializedData>>,
+        coroutine: CoroutineScope
+    ): List<MapData> {
+        onStartListener(groupList.size, coroutine)
         var progress = 0
 
         return groupList.map { group ->
@@ -37,20 +41,20 @@ class DataGeocoder(private val name: String, geocoder: Geocoder) {
                 }
             ).also {
                 progress += 1
-                //onProgressListener(progress)
+                onProgressListener(progress, coroutine)
             }
         }.also {
-            //onCompleteListener(it.size)
+            onCompleteListener(it.size, coroutine)
         }
     }
 
-    fun setOnStartListener(callback: (Int) -> Unit) {
+    fun setOnStartListener(callback: (Int, CoroutineScope) -> Unit) {
         onStartListener = callback
     }
-    fun setOnProgressListener(callback: (Int) -> Unit) {
+    fun setOnProgressListener(callback: (Int, CoroutineScope) -> Unit) {
         onProgressListener = callback
     }
-    fun setOnCompleteListener(callback: (Int) -> Unit) {
+    fun setOnCompleteListener(callback: (Int, CoroutineScope) -> Unit) {
         onCompleteListener = callback
     }
 }
