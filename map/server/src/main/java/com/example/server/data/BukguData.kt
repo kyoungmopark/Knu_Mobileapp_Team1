@@ -1,4 +1,4 @@
-package com.example.server.rawdata
+package com.example.server.data
 
 import com.google.gson.annotations.SerializedName
 
@@ -34,7 +34,7 @@ data class BukguData(
     @SerializedName("운동기구종류")
     val equipments: String
 
-): RawData() {
+): DeserializedData() {
     override fun getCompleteAddress() = address
     override fun getEquipmentsToList() = equipments
 }

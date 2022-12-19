@@ -1,4 +1,4 @@
-package com.example.server.rawdata
+package com.example.server.data
 
 import com.google.gson.annotations.SerializedName
 
@@ -28,7 +28,7 @@ data class JungguData(
     @SerializedName("주소")
     val address: String
 
-): RawData() {
+): DeserializedData() {
     override fun getCompleteAddress() = "$city $district $address"
     override fun getEquipmentsToList() = equipment
 }
