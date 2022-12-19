@@ -3,6 +3,8 @@ package com.example.server
 import android.location.Geocoder
 import android.util.Log
 import com.example.server.data.DeserializedData
+import kotlinx.coroutines.CoroutineScope
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 
 // 데이터 업데이트를 총괄한다 (Facade 패턴 활용)
@@ -16,20 +18,20 @@ class DataUpdater<T: DeserializedData>(
     private val geocoder = DataGeocoder(name, geocoder)
     private val uploader = FirebaseUploader(name)
 
-    private lateinit var onStartListener: () -> Unit
-    private lateinit var onCompleteListener: () -> Unit
+    private lateinit var onStartListener: (CoroutineScope) -> Unit
+    private lateinit var onCompleteListener: (CoroutineScope) -> Unit
 
-    suspend fun update() {
-        onStartListener()
+    suspend fun update(coroutine: CoroutineScope) {
+        onStartListener(coroutine)
         val json = downloader.download()
         val deserializedDataList = deserializer.deserialize(json)
         val groupList = deserializedDataList.groupBy { it.getCompleteAddress() }
 
         if (isRequired(groupList.size)) {
-            val mapDataList = geocoder.geocode(groupList)
+            val mapDataList = geocoder.geocode(groupList, coroutine)
             uploader.upload(mapDataList)
         }
-        onCompleteListener()
+        onCompleteListener(coroutine)
     }
 
     private suspend fun isRequired(size: Int): Boolean {
@@ -42,20 +44,20 @@ class DataUpdater<T: DeserializedData>(
         }
     }
 
-    fun setOnStartListener(callback: () -> Unit) {
+    fun setOnStartListener(callback: (CoroutineScope) -> Unit) {
         onStartListener = callback
     }
-    fun setOnCompleteListener(callback: () -> Unit) {
+    fun setOnCompleteListener(callback: (CoroutineScope) -> Unit) {
         onCompleteListener = callback
     }
 
-    fun setOnGeocodeStartListener(callback: (Int) -> Unit) {
+    fun setOnGeocodeStartListener(callback: (Int, CoroutineScope) -> Unit) {
         geocoder.setOnStartListener(callback)
     }
-    fun setOnGeocodeProgressListener(callback: (Int) -> Unit) {
+    fun setOnGeocodeProgressListener(callback: (Int, CoroutineScope) -> Unit) {
         geocoder.setOnProgressListener(callback)
     }
-    fun setOnGeocodeCompleteListener(callback: (Int) -> Unit) {
+    fun setOnGeocodeCompleteListener(callback: (Int, CoroutineScope) -> Unit) {
         geocoder.setOnCompleteListener(callback)
     }
 }

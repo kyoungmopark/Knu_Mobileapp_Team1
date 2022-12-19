@@ -34,30 +34,38 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.json_key),
             geocoder
         ).apply {
-            setOnStartListener {
-                setOnStartListener {
-                    CoroutineScope(Dispatchers.Main).launch {
+            setOnStartListener { coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
                         binding.bukguResult.text = getString(R.string.update_wait)
                     }
                 }
-                setOnCompleteListener {
-                    CoroutineScope(Dispatchers.Main).launch {
+            }
+            setOnCompleteListener { coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
                         binding.bukguResult.text = getString(R.string.update_completed)
                     }
                 }
-                setOnGeocodeStartListener {
-                    CoroutineScope(Dispatchers.Main).launch {
+            }
+            setOnGeocodeStartListener { max, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
                         binding.bukguProgress.visibility = View.VISIBLE
-                        binding.bukguProgress.max = it
+                        binding.bukguProgress.max = max
                     }
                 }
-                setOnGeocodeProgressListener {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        binding.bukguProgress.progress = it
+            }
+            setOnGeocodeProgressListener { progress, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.bukguProgress.progress = progress
                     }
                 }
-                setOnGeocodeCompleteListener {
-                    CoroutineScope(Dispatchers.Main).launch {
+            }
+            setOnGeocodeCompleteListener { max, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
                         binding.bukguProgress.visibility = View.GONE
                     }
                 }
@@ -71,30 +79,40 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.json_key),
             geocoder
         ).apply {
-            setOnStartListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.jungguResult.text = getString(R.string.update_wait)
+            setOnStartListener { coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.jungguResult.text = getString(R.string.update_wait)
+                    }
                 }
             }
-            setOnCompleteListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.jungguResult.text = getString(R.string.update_completed)
+            setOnCompleteListener { coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.jungguResult.text = getString(R.string.update_completed)
+                    }
                 }
             }
-            setOnGeocodeStartListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.jungguProgress.visibility = View.VISIBLE
-                    binding.jungguProgress.max = it
+            setOnGeocodeStartListener { max, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.jungguProgress.visibility = View.VISIBLE
+                        binding.jungguProgress.max = max
+                    }
                 }
             }
-            setOnGeocodeProgressListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.jungguProgress.progress = it
+            setOnGeocodeProgressListener { progress, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.jungguProgress.progress = progress
+                    }
                 }
             }
-            setOnGeocodeCompleteListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.jungguProgress.visibility = View.GONE
+            setOnGeocodeCompleteListener { max, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.jungguProgress.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -106,30 +124,40 @@ class MainActivity : AppCompatActivity() {
             getString(R.string.json_key),
             geocoder
         ).apply {
-            setOnStartListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.suseongguResult.text = getString(R.string.update_wait)
+            setOnStartListener { coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.suseongguResult.text = getString(R.string.update_wait)
+                    }
                 }
             }
-            setOnCompleteListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.suseongguResult.text = getString(R.string.update_completed)
+            setOnCompleteListener { coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.suseongguResult.text = getString(R.string.update_completed)
+                    }
                 }
             }
-            setOnGeocodeStartListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.suseongguProgress.visibility = View.VISIBLE
-                    binding.suseongguProgress.max = it
+            setOnGeocodeStartListener { max, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.suseongguProgress.visibility = View.VISIBLE
+                        binding.suseongguProgress.max = max
+                    }
                 }
             }
-            setOnGeocodeProgressListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.suseongguProgress.progress = it
+            setOnGeocodeProgressListener { progress, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.suseongguProgress.progress = progress
+                    }
                 }
             }
-            setOnGeocodeCompleteListener {
-                CoroutineScope(Dispatchers.Main).launch {
-                    binding.suseongguProgress.visibility = View.GONE
+            setOnGeocodeCompleteListener { max, coroutine ->
+                coroutine.launch {
+                    withContext(Dispatchers.Main) {
+                        binding.suseongguProgress.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -142,9 +170,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 // 각 지역별로 데이터 업데이트를 동시에 한다
                 listOf(
-                    async { bukguDataUpdater.update() },
-                    async { jungguDataUpdater.update() },
-                    async { suseongguDataUpdater.update() }
+                    async { bukguDataUpdater.update(this) },
+                    async { jungguDataUpdater.update(this) },
+                    async { suseongguDataUpdater.update(this) }
                 ).awaitAll()
                 withContext(Dispatchers.Main) {
                     binding.updateButton.isEnabled = true
