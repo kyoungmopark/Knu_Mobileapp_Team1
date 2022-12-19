@@ -6,4 +6,6 @@ class MapData {
     lateinit var completeAddress: String
     var geoPoint: GeoPoint? = null
     lateinit var equipments: List<String>
+
+    override fun toString() = "MapData($completeAddress, $geoPoint)"
 }

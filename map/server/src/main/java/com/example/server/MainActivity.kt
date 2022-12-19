@@ -1,13 +1,16 @@
 package com.example.server
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.example.server.data.BukguData
+import com.example.server.data.DeserializedData
+import com.example.server.data.JungguData
+import com.example.server.data.SuseongguData
 import com.example.server.databinding.ActivityMainBinding
-import com.example.server.mapdata.*
-import com.example.server.rawdata.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -15,12 +18,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var dataConverter: DataConverter
-    private lateinit var bukguDataService: DataService<BukguData>
-    private lateinit var jungguDataService: DataService<JungguData>
-    private lateinit var suseongguDataService: DataService<SuseongguData>
-
-    private val channel = Channel<String>()
+    private lateinit var bukguDataUpdater: DataUpdater<BukguData>
+    private lateinit var jungguDataUpdater: DataUpdater<JungguData>
+    private lateinit var suseongguDataUpdater: DataUpdater<SuseongguData>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,40 +28,46 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dataConverter = DataConverter(this)
-
-        bukguDataService = DataService(
-            RawDataService(BukguData::class, getString(R.string.bukgu_url_base), getString(R.string.service_key)),
-            dataConverter,
-            MapDataService(getString(R.string.bukgu_collection_name))
+        bukguDataUpdater = DataUpdater(
+            BukguData::class,
+            getString(R.string.bukgu),
+            getString(R.string.bukgu_json_url),
+            getString(R.string.json_key),
+            this
         )
-        jungguDataService = DataService(
-            RawDataService(JungguData::class, getString(R.string.junggu_url_base), getString(R.string.service_key)),
-            dataConverter,
-            MapDataService(getString(R.string.junggu_collection_name))
+        jungguDataUpdater = DataUpdater(
+            JungguData::class,
+            getString(R.string.junggu),
+            getString(R.string.junggu_json_url),
+            getString(R.string.json_key),
+            this
         )
-        suseongguDataService = DataService(
-            RawDataService(SuseongguData::class, getString(R.string.suseonggu_url_base), getString(R.string.service_key)),
-            dataConverter,
-            MapDataService(getString(R.string.suseonggu_collection_name))
+        suseongguDataUpdater = DataUpdater(
+            SuseongguData::class,
+            getString(R.string.suseonggu),
+            getString(R.string.suseonggu_json_url),
+            getString(R.string.json_key),
+            this
         )
 
         binding.updateButton.setOnClickListener {
-            CoroutineScope(Dispatchers.IO).launch {
+            binding.updateButton.isEnabled = false
+            update(bukguDataUpdater, binding.bukguProgress)
+            update(jungguDataUpdater, binding.jungguProgress)
+            update(suseongguDataUpdater, binding.suseongguProgress)
+        }
+    }
 
-                withContext(Dispatchers.Main) {
-                    binding.updateButton.isEnabled = false
-                    binding.textView.text = getString(R.string.update_in_prograss)
-                }
-
-                bukguDataService.update()
-                jungguDataService.update()
-                suseongguDataService.update()
-
-                withContext(Dispatchers.Main) {
-                    binding.updateButton.isEnabled = true
-                    binding.textView.text = getString(R.string.update_completed)
-                }
+    private fun<T: DeserializedData> update(dataUpdater: DataUpdater<T>, progressBar: ProgressBar) {
+        progressBar.isVisible = true
+        CoroutineScope(Dispatchers.IO).launch {
+            dataUpdater.setOnGeocodeProgressListener { progress, max ->
+                progressBar.progress = progress
+                progressBar.max = max
+            }
+            dataUpdater.update()
+            withContext(Dispatchers.Main) {
+                progressBar.isVisible = false
             }
         }
     }
