@@ -17,5 +17,5 @@
     <string name="update">update</string>
     <string name="update_already">이미 최신 데이터임</string>
     <string name="update_wait">데이터 업데이트 중</string>
-    <string name="update_completed">데이터 업데이트 완료함</string>
+    <string name="update_completed">데이터 업데이트 완료</string>
 </resources>
