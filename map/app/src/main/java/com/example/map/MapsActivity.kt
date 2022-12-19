@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -13,7 +12,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.map.databinding.ActivityMapsBinding
-import com.example.mapdata.MapData
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -22,18 +20,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.suspendCoroutine
 
 class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
@@ -42,7 +34,10 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
     lateinit var apiClient: GoogleApiClient
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
-    lateinit var db: FirebaseFirestore
+
+    private lateinit var bukguDataDownloader: DataDownloader
+    private lateinit var jungguDataDownloader: DataDownloader
+    private lateinit var suseongguDataDownloader: DataDownloader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +95,10 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             apiClient.connect()
         }
         binding.cardView.visibility = View.GONE
+
+        bukguDataDownloader = DataDownloader(getString(R.string.bukgu))
+        jungguDataDownloader = DataDownloader(getString(R.string.junggu))
+        suseongguDataDownloader = DataDownloader(getString(R.string.suseonggu))
     }
 
     override fun onRequestPermissionsResult(
@@ -116,15 +115,16 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             apiClient.connect()
         }
     }
+
     private fun moveMap(latitude: Double, longitude: Double) {
         val latLng = LatLng(latitude, longitude)
         val position: CameraPosition = CameraPosition.Builder()
             .target(latLng)
             .zoom(16f)
             .build()
-// 지도 중심 이동하기
+        // 지도 중심 이동하기
         mMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
-// 마커 옵션
+        // 마커 옵션
         val markerOptions = MarkerOptions()
         markerOptions.icon(
             BitmapDescriptorFactory.defaultMarker(
@@ -167,33 +167,23 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        db = FirebaseFirestore.getInstance()
-        var firebaseMapDataList = mutableListOf<MapData>()
-        
-        //바뀐 코드 시작
-        firebaseMapDataList = MapDataService(db, "junggu").getData()
-        
-        Log.d("errorcheck", "포문 시작")
-        for (tempMapData in firebaseMapDataList) {
-            val lat: Double? = tempMapData.geoPoint?.getLatitude()
-            val lng: Double? = tempMapData.geoPoint?.getLongitude()
 
-            if ((lat != null) && (lng != null)){
-                Log.d("errorcheck", "for문 : ${tempMapData.completeAddress}")
-                val markerOptions = MarkerOptions()
-                markerOptions.position(LatLng(lat, lng))
-                val marker = mMap.addMarker(markerOptions)
+        CoroutineScope(Dispatchers.IO).launch {
+            val mapDataList = bukguDataDownloader.download()
+            mapDataList.forEach { mapData ->
+                mapData.geoPoint?.also { geoPoint ->
 
-                marker?.tag = tempMapData.completeAddress + "/"
+                    val latLng = LatLng(geoPoint.latitude, geoPoint.longitude)
+                    val markerOptions = MarkerOptions().apply { position(latLng) }
 
-                for (i in tempMapData.equipments) {
-                    marker?.tag = marker?.tag.toString() + "$i \n"
+                    withContext(Dispatchers.Main) {
+                        mMap.addMarker(markerOptions)?.apply {
+                            tag = "${mapData.completeAddress}/${mapData.equipments.joinToString("\n")}"
+                        }
+                    }
                 }
             }
-
         }
-        Log.d("errorcheck", "포문 나옴")
-        //바뀐 코드 끝
 
         //기존 코드 시작
         /*db.collection("junggu")
@@ -222,8 +212,7 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
                 }
         }*/
         //기존 코드 끝
-        
-        
+
         Log.d("errorcheck", "마커 클릭 리스너 시작")
         // 마커 클릭 리스너 : 클릭하면 카드뷰를 띄움
         googleMap!!.setOnMarkerClickListener(object : GoogleMap.OnMarkerClickListener{
@@ -250,7 +239,5 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             }
         })
         Log.d("errorcheck", "맵 클릭 리스너 끝")
-
     }
-
 }

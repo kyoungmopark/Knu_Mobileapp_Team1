@@ -5,8 +5,8 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
 
-// 공공데이터 API와 통신하여 JSON을 다운로드받는다.
-class JsonDownloader(urlString: String) {
+// 공공데이터 API로부터 JSON을 다운로드받는다
+class JsonDownloader(private val name: String, urlString: String) {
     private val url = URL(urlString)
 
     fun download(): String {
@@ -20,11 +20,11 @@ class JsonDownloader(urlString: String) {
                 }
             }
             buffer.toString().also {
-                Log.d("dev", "succeed to download json")
+                Log.d("dev", "succeed to download json of $name")
             }
         } catch (e: Exception) {
             "".also {
-                Log.d("dev", "failed to download json")
+                Log.d("dev", "failed to download json of $name")
             }
         }
     }

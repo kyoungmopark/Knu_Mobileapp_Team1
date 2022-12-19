@@ -1,22 +1,26 @@
 package com.example.server
 
-import android.content.Context
+import android.location.Geocoder
 import android.util.Log
 import com.example.server.data.DeserializedData
 import kotlin.reflect.KClass
 
-// 데이터를 업데이트하는 facade다.
+// 데이터 업데이트를 총괄한다 (Facade 패턴 활용)
 class DataUpdater<T: DeserializedData>(
-    clazz: KClass<T>, name: String,
+    clazz: KClass<T>, private val name: String,
     jsonUrl: String, jsonKey: String,
-    context: Context
+    geocoder: Geocoder
 ) {
-    private val downloader = JsonDownloader("$jsonUrl?perPage=0&serviceKey=$jsonKey")
-    private val deserializer = JsonDeserializer(clazz)
-    private val geocoder = DataGeocoder(context)
+    private val downloader = JsonDownloader(name, "$jsonUrl?perPage=0&serviceKey=$jsonKey")
+    private val deserializer = JsonDeserializer(clazz, name)
+    private val geocoder = DataGeocoder(name, geocoder)
     private val uploader = FirebaseUploader(name)
 
+    private lateinit var onStartListener: () -> Unit
+    private lateinit var onCompleteListener: () -> Unit
+
     suspend fun update() {
+        onStartListener()
         val json = downloader.download()
         val deserializedDataList = deserializer.deserialize(json)
         val rawDataGroups = deserializedDataList.groupBy { it.getCompleteAddress() }
@@ -25,23 +29,33 @@ class DataUpdater<T: DeserializedData>(
             val mapDataList = geocoder.geocode(rawDataGroups)
             uploader.upload(mapDataList)
         }
+        onCompleteListener()
     }
 
     private suspend fun isRequired(size: Int): Boolean {
         return (uploader.getTotal() != size).also {
             if (it) {
-                Log.d("dev", "update required")
+                Log.d("dev", "required to update data of $name")
             } else {
-                Log.d("dev", "update passed")
+                Log.d("dev", "passed to update data of $name")
             }
         }
     }
 
-    fun setOnGeocodeProgressListener(callback: (Int, Int) -> Unit) {
-        geocoder.setOnProgressListener(callback)
+    fun setOnStartListener(callback: () -> Unit) {
+        onStartListener = callback
+    }
+    fun setOnCompleteListener(callback: () -> Unit) {
+        onCompleteListener = callback
     }
 
-    fun setOnUploadCompletedListener(callback: () -> Unit) {
-        uploader.setOnCompletedListener(callback)
+    fun setOnGeocodeStartListener(callback: (Int) -> Unit) {
+        geocoder.setOnStartListener(callback)
+    }
+    fun setOnGeocodeProgressListener(callback: (Int) -> Unit) {
+        geocoder.setOnProgressListener(callback)
+    }
+    fun setOnGeocodeCompleteListener(callback: (Int) -> Unit) {
+        geocoder.setOnCompleteListener(callback)
     }
 }

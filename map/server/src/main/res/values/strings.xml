@@ -2,13 +2,6 @@
     <string name="app_name">server</string>
     <string name="json_key">N5y%2B8eZU60ZCyJtY9JpQwgjexI5cM5LAK8S4s1p3WHgtTMXy24R4z%2Bt7njRjWjXdjVwteW39U5SPpLsLcAnB%2Fg%3D%3D</string>
 
-<<<<<<< Updated upstream
-    <string name="daegu_bukgu_url_base">https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8</string>
-    <string name="daegu_bukgu_collection_name">bukgu</string>
-
-    <string name="daegu_junggu_url_base">https://api.odcloud.kr/api/15101506/v1/uddi:1958c212-87f4-4042-9466-eb03cb718ff1</string>
-    <string name="daegu_junggu_collection_name">junggu</string>
-=======
     <string name="bukgu">bukgu</string>
     <string name="bukgu_json_url">https://api.odcloud.kr/api/15101420/v1/uddi:37a2f399-4dd0-4483-8c3a-97c81e7171c8</string>
 
@@ -24,5 +17,4 @@
     <string name="update">update</string>
     <string name="update_already">이미 최신 데이터임</string>
     <string name="update_completed">데이터 업데이트 완료함</string>
->>>>>>> Stashed changes
 </resources>
