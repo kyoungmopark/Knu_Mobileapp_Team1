@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity"
     android:orientation="vertical"
-    android:gravity="center" >
+    android:gravity="center">
 
     <Button
         android:id="@+id/update_button"
@@ -14,11 +14,70 @@
         android:text="@string/update"
         android:textSize="40sp" />
 
-    <TextView
-        android:id="@+id/text_view"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="30sp" />
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="북구: "
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/bukgu_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="30sp" />
+        <ProgressBar
+            android:id="@+id/bukgu_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="중구: "
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/junggu_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="30sp" />
+        <ProgressBar
+            android:id="@+id/junggu_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="수성구: "
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/suseonggu_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="30sp" />
+        <ProgressBar
+            android:id="@+id/suseonggu_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
 
 </LinearLayout>
