@@ -15,7 +15,7 @@ class Start : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.start.setOnClickListener{
-            Log.d("cc","click")
+            Log.d("knu","click")
             if(i==0){
                 binding.start.setBackgroundResource(R.drawable.start2)
                 i++
