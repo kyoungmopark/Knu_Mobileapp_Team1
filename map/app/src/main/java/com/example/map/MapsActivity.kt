@@ -191,6 +191,38 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
             }
         }
 
+        CoroutineScope(Dispatchers.IO).launch {
+            val mapDataList = jungguDataDownloader.download()
+            mapDataList.forEach { mapData ->
+                Log.d("knu", "get $mapData of junggu")
+                mapData.geoPoint?.also { geoPoint ->
+                    withContext(Dispatchers.Main) {
+                        val latLng = LatLng(geoPoint.latitude, geoPoint.longitude)
+                        val markerOptions = MarkerOptions().apply { position(latLng) }
+                        mMap.addMarker(markerOptions)?.apply {
+                            tag = "${mapData.completeAddress}/${mapData.equipments.joinToString("\n")}"
+                        }
+                    }
+                }
+            }
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val mapDataList = suseongguDataDownloader.download()
+            mapDataList.forEach { mapData ->
+                Log.d("knu", "get $mapData of suseonggu")
+                mapData.geoPoint?.also { geoPoint ->
+                    withContext(Dispatchers.Main) {
+                        val latLng = LatLng(geoPoint.latitude, geoPoint.longitude)
+                        val markerOptions = MarkerOptions().apply { position(latLng) }
+                        mMap.addMarker(markerOptions)?.apply {
+                            tag = "${mapData.completeAddress}/${mapData.equipments.joinToString("\n")}"
+                        }
+                    }
+                }
+            }
+        }
+
         //기존 코드 시작
         /*db.collection("junggu")
             .get().addOnSuccessListener { document ->
