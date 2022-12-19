@@ -19,11 +19,11 @@ class JsonDeserializer<T: DeserializedData>(private val clazz: KClass<T>, privat
                 JsonParser.parseString(json).asJsonObject.get("data"),
                 TypeToken.getParameterized(List::class.java, clazz.java).type
             ).also {
-                Log.d("dev", "succeed to deserialize json of $name")
+                Log.d("knu", "succeed to deserialize json(size = ${it.size}) of $name")
             }
         } catch (e: Exception) {
             listOf<T>().also {
-                Log.d("dev", "failed to deserialize json of $name")
+                Log.d("knu", "failed to deserialize json of $name\n$e")
             }
         }
     }

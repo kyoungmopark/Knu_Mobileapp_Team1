@@ -23,10 +23,10 @@ class DataUpdater<T: DeserializedData>(
         onStartListener()
         val json = downloader.download()
         val deserializedDataList = deserializer.deserialize(json)
-        val rawDataGroups = deserializedDataList.groupBy { it.getCompleteAddress() }
+        val groupList = deserializedDataList.groupBy { it.getCompleteAddress() }
 
-        if (isRequired(rawDataGroups.size)) {
-            val mapDataList = geocoder.geocode(rawDataGroups)
+        if (isRequired(groupList.size)) {
+            val mapDataList = geocoder.geocode(groupList)
             uploader.upload(mapDataList)
         }
         onCompleteListener()
@@ -35,9 +35,9 @@ class DataUpdater<T: DeserializedData>(
     private suspend fun isRequired(size: Int): Boolean {
         return (uploader.getTotal() != size).also {
             if (it) {
-                Log.d("dev", "required to update data of $name")
+                Log.d("knu", "required to update data(size = $size) of $name")
             } else {
-                Log.d("dev", "passed to update data of $name")
+                Log.d("knu", "passed to update data(size = $size) of $name")
             }
         }
     }
