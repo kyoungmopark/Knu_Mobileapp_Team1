@@ -16,16 +16,29 @@ class FirebaseUploader(private val name: String) {
 
     private val collection = firestore.collection(name)
 
-    suspend fun getTotal(): Int {
+    suspend fun getTotal(): Int = suspendCoroutine { continuation ->
+        val task = collection.document("total").get()
+        task.addOnSuccessListener { document ->
+            val totalData = document.toObject(TotalData::class.java).also {
+                Log.d("knu", "succeed to get $it of $name")
+            }
+            continuation.resume(totalData?.total ?: 0)
+        }.addOnFailureListener {
+            Log.d("knu", "failed to get Total of $name")
+            continuation.resume(0)
+        }
+    }
+
+    suspend fun getTotal_new(): Int {
         val task = collection.document("total").get()
         val document = task.await()
 
         val totalData = if (task.isSuccessful) {
             document.toObject(TotalData::class.java).also {
-                Log.d("dev", "succeed to get $it of $name")
+                Log.d("knu", "succeed to get $it of $name")
             }
         } else {
-            Log.d("dev", "failed to get Total of $name")
+            Log.d("knu", "failed to get Total of $name")
             null
         }
         return totalData?.total ?: 0
@@ -44,9 +57,9 @@ class FirebaseUploader(private val name: String) {
         task.await()
 
         if (task.isSuccessful) {
-            Log.d("dev", "succeed to upload data into $name")
+            Log.d("knu", "succeed to upload data into $name")
         } else {
-            Log.d("dev", "failed to upload data into $name")
+            Log.d("knu", "failed to upload data into $name")
         }
     }
 }

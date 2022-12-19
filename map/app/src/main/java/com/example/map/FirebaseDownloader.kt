@@ -19,12 +19,13 @@ class FirebaseDownloader(private val name: String) {
         val query = task.await()
 
         return if (task.isSuccessful) {
-            Log.d("dev", "succeed to download data from $name")
-            query.documents.filterNot { it.id != "total" }.map { document ->
+            query.documents.map { document ->
                 document.toObject(MapData::class.java) ?: MapData()
+            }.also {
+                Log.d("knu", "succeed to download data(size = ${it.size}) from $name")
             }
         } else {
-            Log.d("dev", "failed to download data from $name")
+            Log.d("knu", "failed to download data from $name")
             listOf()
         }
     }
