@@ -1,14 +1,15 @@
-package com.example.server.rawdata
+package com.example.server
 
 import android.util.Log
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
 
+// 공공데이터 API와 통신하여 JSON을 다운로드받는다.
 class JsonDownloader(urlString: String) {
     private val url = URL(urlString)
 
-    fun receive(): String {
+    fun download(): String {
         return try {
             val buffer = StringBuffer()
             url.openConnection().getInputStream().use { stream ->
@@ -18,11 +19,13 @@ class JsonDownloader(urlString: String) {
                     }
                 }
             }
-            Log.d("dev", "succeed to download json")
-            buffer.toString()
+            buffer.toString().also {
+                Log.d("dev", "succeed to download json")
+            }
         } catch (e: Exception) {
-            Log.d("dev", "failed to download json")
-            ""
+            "".also {
+                Log.d("dev", "failed to download json")
+            }
         }
     }
 }
