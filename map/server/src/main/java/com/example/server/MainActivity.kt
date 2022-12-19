@@ -27,57 +27,80 @@ class MainActivity : AppCompatActivity() {
 
         val geocoder = Geocoder(this, Locale.KOREA)
 
-        bukguDataUpdater = DataUpdater(BukguData::class,
+        bukguDataUpdater = DataUpdater(
+            BukguData::class,
             getString(R.string.bukgu),
             getString(R.string.bukgu_json_url),
             getString(R.string.json_key),
             geocoder
         ).apply {
             setOnStartListener {
-                binding.bukguProgress.visibility = View.VISIBLE
-            }
-            setOnCompleteListener {
-                binding.bukguProgress.visibility = View.GONE
-                binding.bukguProgress.progress = 0
-            }
-            setOnGeocodeProgressListener {
-                binding.bukguProgress.incrementProgressBy(1)
+                setOnStartListener {
+                    binding.bukguResult.text = getString(R.string.update_wait)
+                }
+                setOnCompleteListener {
+                    binding.bukguResult.text = getString(R.string.update_completed)
+                }
+                setOnGeocodeStartListener {
+                    binding.bukguProgress.visibility = View.VISIBLE
+                    binding.bukguProgress.max = it
+                }
+                setOnGeocodeProgressListener {
+                    binding.bukguProgress.progress = it
+                }
+                setOnGeocodeCompleteListener {
+                    binding.bukguProgress.visibility = View.GONE
+                }
             }
         }
 
-        jungguDataUpdater = DataUpdater(JungguData::class,
+        jungguDataUpdater = DataUpdater(
+            JungguData::class,
             getString(R.string.junggu),
             getString(R.string.junggu_json_url),
             getString(R.string.json_key),
             geocoder
         ).apply {
             setOnStartListener {
-                binding.jungguProgress.visibility = View.VISIBLE
+                binding.jungguResult.text = getString(R.string.update_wait)
             }
             setOnCompleteListener {
-                binding.jungguProgress.visibility = View.GONE
-                binding.jungguProgress.progress = 0
+                binding.jungguResult.text = getString(R.string.update_completed)
+            }
+            setOnGeocodeStartListener {
+                binding.jungguProgress.visibility = View.VISIBLE
+                binding.jungguProgress.max = it
             }
             setOnGeocodeProgressListener {
-                binding.jungguProgress.incrementProgressBy(1)
+                binding.jungguProgress.progress = it
+            }
+            setOnGeocodeCompleteListener {
+                binding.jungguProgress.visibility = View.GONE
             }
         }
 
-        suseongguDataUpdater = DataUpdater(SuseongguData::class,
+        suseongguDataUpdater = DataUpdater(
+            SuseongguData::class,
             getString(R.string.suseonggu),
             getString(R.string.suseonggu_json_url),
             getString(R.string.json_key),
             geocoder
         ).apply {
             setOnStartListener {
-                binding.suseongguProgress.visibility = View.VISIBLE
+                binding.suseongguResult.text = getString(R.string.update_wait)
             }
             setOnCompleteListener {
-                binding.suseongguProgress.visibility = View.GONE
-                binding.suseongguProgress.progress = 0
+                binding.suseongguResult.text = getString(R.string.update_completed)
+            }
+            setOnGeocodeStartListener {
+                binding.suseongguProgress.visibility = View.VISIBLE
+                binding.suseongguProgress.max = it
             }
             setOnGeocodeProgressListener {
-                binding.suseongguProgress.incrementProgressBy(1)
+                binding.suseongguProgress.progress = it
+            }
+            setOnGeocodeCompleteListener {
+                binding.suseongguProgress.visibility = View.GONE
             }
         }
 
