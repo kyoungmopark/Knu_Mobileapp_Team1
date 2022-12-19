@@ -1,6 +1,7 @@
 package com.example.map
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -44,6 +45,12 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.bottom.setOnClickListener{
+            val intent = Intent(this, Favorite::class.java)
+            startActivity(intent)
+
+        }
 
         val requestPermissionLauncher = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
