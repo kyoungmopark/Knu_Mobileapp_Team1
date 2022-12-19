@@ -5,6 +5,8 @@ import android.util.Log
 import com.example.mapdata.MapData
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 // 파이어베이스로부터 데이터를 다운로드받는다
 class FirebaseDownloader(private val name: String) {
@@ -14,19 +16,32 @@ class FirebaseDownloader(private val name: String) {
 
     private val collection = firestore.collection(name)
 
-    suspend fun download(): List<MapData> {
+    suspend fun download(): List<MapData> = suspendCoroutine { continuation ->
+        collection.get().addOnSuccessListener { query ->
+            val mapDataList = query.documents.map { document ->
+                document.toObject(MapData::class.java) ?: MapData()
+            }
+            continuation.resume(mapDataList)
+        }.addOnFailureListener {
+            Log.d("knu", "failed to download data from $name\n$it")
+            continuation.resume(listOf())
+        }
+    }
+
+    /*suspend fun download(): List<MapData> {
         val task = collection.get()
         val query = task.await()
 
         return if (task.isSuccessful) {
-            Log.d("dev", "succeed to download data from $name")
-            query.documents.filterNot { it.id != "total" }.map { document ->
+            query.documents.map { document ->
                 document.toObject(MapData::class.java) ?: MapData()
+            }.also {
+                Log.d("knu", "succeed to download data(size = ${it.size}) from $name")
             }
         } else {
-            Log.d("dev", "failed to download data from $name")
+            Log.d("knu", "failed to download data from $name")
             listOf()
         }
-    }
+    }*/
 }
 
