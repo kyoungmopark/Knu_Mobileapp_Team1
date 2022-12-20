@@ -112,6 +112,13 @@
         android:alpha="0.5"
         android:src="@drawable/search2" />
 
+    <Button
+        android:id="@+id/currentLocationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="000"/>
+
+
 </RelativeLayout>
 
 

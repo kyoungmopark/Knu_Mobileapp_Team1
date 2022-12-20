@@ -49,7 +49,6 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         binding.bottom.setOnClickListener{
             val intent = Intent(this, Favorite::class.java)
             startActivity(intent)
-
         }
 
         val requestPermissionLauncher = registerForActivityResult(
@@ -141,6 +140,10 @@ class MapsActivity : AppCompatActivity(), GoogleApiClient.ConnectionCallbacks,
         markerOptions.position(latLng)
         // 마커 표시하기
         mMap?.addMarker(markerOptions)?.tag = "현재위치/ "
+
+        binding.currentLocationBtn.setOnClickListener {
+            mMap!!.moveCamera(CameraUpdateFactory.newCameraPosition(position))
+        }
     }
 
     // 위치 제공자를 사용할 수 있는 상황일 때
