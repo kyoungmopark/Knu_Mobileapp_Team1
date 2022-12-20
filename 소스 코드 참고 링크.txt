@@ -1,0 +1,5 @@
+공공데이터 API로 데이터를 받아오는 방법 참고
+https://fre2-dom.tistory.com/m/126?category=949323
+
+gson으로 JSON 데이터를 Deserialize하는 방법 참고
+https://stackoverflow.com/questions/33381384/how-to-use-typetoken-generics-with-gson-in-kotlin
