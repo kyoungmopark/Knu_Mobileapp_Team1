@@ -5,7 +5,7 @@
 ```
 /app		// 야운동 app
 /mapdata	// 야운동 app과 서버 app이 서로 공유하는 class들의 라이브러리
-/server	// 서버 app
+/server		// 서버 app
 ```
 
 
