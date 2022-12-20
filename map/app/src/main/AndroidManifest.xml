@@ -20,9 +20,6 @@
         android:theme="@style/Theme.Map"
         tools:targetApi="31">
         <activity
-            android:name=".Favorite"
-            android:exported="true" />
-        <activity
             android:name=".Start"
             android:exported="true">
             <intent-filter>
