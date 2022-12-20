@@ -28,21 +28,6 @@ class FirebaseUploader(private val name: String) {
         }
     }
 
-    /*suspend fun getTotal(): Int {
-        val task = collection.document("total").get()
-        val document = task.await()
-
-        val totalData = if (task.isSuccessful) {
-            document.toObject(TotalData::class.java).also {
-                Log.d("knu", "succeed to get $it of $name")
-            }
-        } else {
-            Log.d("knu", "failed to get Total of $name")
-            null
-        }
-        return totalData?.total ?: 0
-    }*/
-
     suspend fun upload(mapDataList: List<MapData>): Boolean = suspendCoroutine { continuation ->
         val batch = firestore.batch()
 
@@ -60,23 +45,4 @@ class FirebaseUploader(private val name: String) {
             continuation.resume(false)
         }
     }
-
-    /*suspend fun upload(mapDataList: List<MapData>) {
-        val batch = firestore.batch()
-
-        mapDataList.forEachIndexed { index, mapData ->
-            batch.set(collection.document(index.toString()), mapData)
-        }
-        val totalData = TotalData(mapDataList.size)
-        batch.set(collection.document("total"), totalData)
-
-        val task = batch.commit()
-        task.await()
-
-        if (task.isSuccessful) {
-            Log.d("knu", "succeed to upload data into $name")
-        } else {
-            Log.d("knu", "failed to upload data into $name")
-        }
-    }*/
 }
