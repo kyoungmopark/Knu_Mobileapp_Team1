@@ -17,26 +17,12 @@ class Start : AppCompatActivity() {
         binding.start.setOnClickListener{
             Log.d("knu","click")
             if(i==0){
-                binding.start.setBackgroundResource(R.drawable.start2)
+                binding.start.setBackgroundResource(R.drawable.logintdisplay)
                 i++
-            }
-            else if(i==1){
-                binding.start.setBackgroundResource(R.drawable.start3)
-                i++
-            }
-            else if(i==2){
-                binding.start.setBackgroundResource(R.drawable.start4)
-                i++
-            }
-            else if(i==3){
-                binding.start.setBackgroundResource(R.drawable.login)
-                i++
-            }
-            else if(i==4){
-                val intent = Intent(this, MapsActivity::class.java)
-                startActivity(intent)
-
-            }
+            } else if(i==1){
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivity(intent)
+        }
 
         }
     }
